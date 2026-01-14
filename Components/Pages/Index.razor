@@ -1,0 +1,68 @@
+@page "/"
+@page "/fixtures"
+@using FixtureDisplay.Models
+@using FixtureDisplay.Services
+
+
+<PageTitle>Fixture Display</PageTitle>
+
+<h3 class="mb-4">Fixture Search</h3>
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <label class="form-label">Home Team</label>
+        <RadzenDropDown @bind-Value="@selectedHomeTeam"
+                        Data="@teams"
+                        TextProperty="TeamName"
+                        ValueProperty="TeamCode"
+                        Placeholder="Select Home Team"
+                        Style="width: 100%;" />
+    </div>
+    <div class="col-md-4">
+        <label class="form-label">Away Team</label>
+        <RadzenDropDown @bind-Value="@selectedAwayTeam"
+                        Data="@teams"
+                        TextProperty="TeamName"
+                        ValueProperty="TeamCode"
+                        Placeholder="Select Away Team"
+                        Style="width: 100%;" />
+    </div>
+    <div class="col-md-4 d-flex align-items-end">
+        <RadzenButton Text="Display"
+                      Click="@DisplayFixtures"
+                      ButtonStyle="ButtonStyle.Primary"
+                      Style="margin-right: 10px;"
+                      Disabled="@(string.IsNullOrEmpty(selectedHomeTeam) || string.IsNullOrEmpty(selectedAwayTeam))" />
+        <RadzenButton Text="Reset"
+                      Click="@ResetPage"
+                      ButtonStyle="ButtonStyle.Secondary" />
+    </div>
+</div>
+
+@if (fixtures != null && fixtures.Any())
+{
+    <div class="mt-4">
+        <h4>Search Results</h4>
+        <RadzenDataGrid Data="@fixtures"
+                        TItem="SunderlandFixture"
+                        AllowPaging="false"
+                        AllowSorting="true"
+                        Style="margin-top: 20px;">
+            <Columns>
+                <RadzenDataGridColumn TItem="SunderlandFixture" Property="ID" Title="ID" Width="80px" />
+                <RadzenDataGridColumn TItem="SunderlandFixture" Property="HomeTeamCode" Title="Home Team Code" Width="150px" />
+                <RadzenDataGridColumn TItem="SunderlandFixture" Property="HomeTeamName" Title="Home Team Name" />
+                <RadzenDataGridColumn TItem="SunderlandFixture" Property="AwayTeamCode" Title="Away Team Code" Width="150px" />
+                <RadzenDataGridColumn TItem="SunderlandFixture" Property="AwayTeamName" Title="Away Team Name" />
+                <RadzenDataGridColumn TItem="SunderlandFixture" Property="MaximumAwayScore" Title="Max Away Score" Width="150px" />
+            </Columns>
+        </RadzenDataGrid>
+    </div>
+}
+else if (searchPerformed && (fixtures == null || !fixtures.Any()))
+{
+    <div class="alert alert-info mt-4">
+        No fixtures found for the selected teams.
+    </div>
+}
+
