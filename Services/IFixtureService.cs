@@ -1,11 +1,14 @@
-﻿// Services/FixtureService.cs
-using FixtureDisplay.Models;
+﻿using FixtureDisplay.Models;
 
 namespace FixtureDisplay.Services
 {
     public interface IFixtureService
     {
         Task<List<Team>> GetAllTeamsAsync();
-        Task<List<SunderlandFixture>> GetFixturesByTeamsAsync(string homeTeamCode, string awayTeamCode);
+        Task<List<int>> GetDistinctSeasonsAsync();
+        Task<List<HistoricalResult>> GetHistoricalResultsByTeamsAndSeasonAsync(
+            string homeTeamCode,
+            string awayTeamCode,
+            int season);
     }
 }

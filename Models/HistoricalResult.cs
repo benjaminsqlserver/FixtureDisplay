@@ -1,13 +1,15 @@
 ﻿namespace FixtureDisplay.Models
 {
-    public class SunderlandFixture
+    public class HistoricalResult
     {
-        public int ID { get; set; }
+        public int HistoricalResultId { get; set; }
         public string HomeTeamCode { get; set; } = string.Empty;
         public string AwayTeamCode { get; set; } = string.Empty;
-        public int? MaximumAwayScore { get; set; }
+        public int HomeScore { get; set; }
+        public int AwayScore { get; set; }
+        public int OriginalSeason { get; set; }
+        public int OriginalMatchday { get; set; }
         public string HomeTeamName { get; set; } = string.Empty;
         public string AwayTeamName { get; set; } = string.Empty;
-        public int? MaximumHomeScore { get; set; }
     }
 }

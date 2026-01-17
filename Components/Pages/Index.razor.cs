@@ -1,16 +1,8 @@
 using FixtureDisplay.Models;
 using FixtureDisplay.Services;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
 using Microsoft.JSInterop;
 using Radzen;
-using Radzen.Blazor;
-using System.Net.Http;
 
 namespace FixtureDisplay.Components.Pages
 {
@@ -38,14 +30,17 @@ namespace FixtureDisplay.Components.Pages
         protected NotificationService NotificationService { get; set; }
 
         private List<Team>? teams;
-        private List<SunderlandFixture>? fixtures;
+        private List<int>? seasons;
+        private List<HistoricalResult>? historicalResults;
         private string? selectedHomeTeam;
         private string? selectedAwayTeam;
+        private int? selectedSeason;
         private bool searchPerformed = false;
 
         protected override async Task OnInitializedAsync()
         {
             await LoadTeams();
+            await LoadSeasons();
         }
 
         private async Task LoadTeams()
@@ -53,13 +48,28 @@ namespace FixtureDisplay.Components.Pages
             teams = await FixtureService.GetAllTeamsAsync();
         }
 
-        private async Task DisplayFixtures()
+        private async Task LoadSeasons()
         {
-            if (!string.IsNullOrEmpty(selectedHomeTeam) && !string.IsNullOrEmpty(selectedAwayTeam))
+            seasons = await FixtureService.GetDistinctSeasonsAsync();
+        }
+
+        private async Task DisplayResults()
+        {
+            if (IsSearchEnabled())
             {
-                fixtures = await FixtureService.GetFixturesByTeamsAsync(selectedHomeTeam, selectedAwayTeam);
+                historicalResults = await FixtureService.GetHistoricalResultsByTeamsAndSeasonAsync(
+                    selectedHomeTeam!,
+                    selectedAwayTeam!,
+                    selectedSeason!.Value);
                 searchPerformed = true;
             }
+        }
+
+        private bool IsSearchEnabled()
+        {
+            return !string.IsNullOrEmpty(selectedHomeTeam)
+                && !string.IsNullOrEmpty(selectedAwayTeam)
+                && selectedSeason.HasValue;
         }
 
         private void ResetPage()

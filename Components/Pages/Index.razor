@@ -3,13 +3,12 @@
 @using FixtureDisplay.Models
 @using FixtureDisplay.Services
 
-
 <PageTitle>Fixture Display</PageTitle>
 
-<h3 class="mb-4">Fixture Search</h3>
+<h3 class="mb-4">Historical Results Search</h3>
 
 <div class="row mb-4">
-    <div class="col-md-4">
+    <div class="col-md-3">
         <label class="form-label">Home Team</label>
         <RadzenDropDown @bind-Value="@selectedHomeTeam"
                         Data="@teams"
@@ -18,7 +17,7 @@
                         Placeholder="Select Home Team"
                         Style="width: 100%;" />
     </div>
-    <div class="col-md-4">
+    <div class="col-md-3">
         <label class="form-label">Away Team</label>
         <RadzenDropDown @bind-Value="@selectedAwayTeam"
                         Data="@teams"
@@ -27,42 +26,51 @@
                         Placeholder="Select Away Team"
                         Style="width: 100%;" />
     </div>
-    <div class="col-md-4 d-flex align-items-end">
+    <div class="col-md-3">
+        <label class="form-label">Season</label>
+        <RadzenDropDown @bind-Value="@selectedSeason"
+                        Data="@seasons"
+                        Placeholder="Select Season"
+                        Style="width: 100%;" />
+    </div>
+    <div class="col-md-3 d-flex align-items-end">
         <RadzenButton Text="Display"
-                      Click="@DisplayFixtures"
+                      Click="@DisplayResults"
                       ButtonStyle="ButtonStyle.Primary"
                       Style="margin-right: 10px;"
-                      Disabled="@(string.IsNullOrEmpty(selectedHomeTeam) || string.IsNullOrEmpty(selectedAwayTeam))" />
+                      Disabled="@(!IsSearchEnabled())" />
         <RadzenButton Text="Reset"
                       Click="@ResetPage"
                       ButtonStyle="ButtonStyle.Secondary" />
     </div>
 </div>
 
-@if (fixtures != null && fixtures.Any())
+@if (historicalResults != null && historicalResults.Any())
 {
     <div class="mt-4">
         <h4>Search Results</h4>
-        <RadzenDataGrid Data="@fixtures"
-                        TItem="SunderlandFixture"
+        <RadzenDataGrid Data="@historicalResults"
+                        TItem="HistoricalResult"
                         AllowPaging="false"
                         AllowSorting="true"
                         Style="margin-top: 20px;">
             <Columns>
-                <RadzenDataGridColumn TItem="SunderlandFixture" Property="ID" Title="ID" Width="80px" />
-                <RadzenDataGridColumn TItem="SunderlandFixture" Property="HomeTeamCode" Title="Home Team Code" Width="150px" />
-                <RadzenDataGridColumn TItem="SunderlandFixture" Property="HomeTeamName" Title="Home Team Name" />
-                <RadzenDataGridColumn TItem="SunderlandFixture" Property="AwayTeamCode" Title="Away Team Code" Width="150px" />
-                <RadzenDataGridColumn TItem="SunderlandFixture" Property="AwayTeamName" Title="Away Team Name" />
-                <RadzenDataGridColumn TItem="SunderlandFixture" Property="MaximumAwayScore" Title="Max Away Score" Width="150px" />
+                <RadzenDataGridColumn TItem="HistoricalResult" Property="HistoricalResultId" Title="ID" Width="80px" />
+                <RadzenDataGridColumn TItem="HistoricalResult" Property="HomeTeamCode" Title="Home Code" Width="120px" />
+                <RadzenDataGridColumn TItem="HistoricalResult" Property="HomeTeamName" Title="Home Team" />
+                <RadzenDataGridColumn TItem="HistoricalResult" Property="HomeScore" Title="Home Score" Width="120px" />
+                <RadzenDataGridColumn TItem="HistoricalResult" Property="AwayScore" Title="Away Score" Width="120px" />
+                <RadzenDataGridColumn TItem="HistoricalResult" Property="AwayTeamCode" Title="Away Code" Width="120px" />
+                <RadzenDataGridColumn TItem="HistoricalResult" Property="AwayTeamName" Title="Away Team" />
+                <RadzenDataGridColumn TItem="HistoricalResult" Property="OriginalSeason" Title="Season" Width="100px" />
+                <RadzenDataGridColumn TItem="HistoricalResult" Property="OriginalMatchday" Title="Matchday" Width="100px" />
             </Columns>
         </RadzenDataGrid>
     </div>
 }
-else if (searchPerformed && (fixtures == null || !fixtures.Any()))
+else if (searchPerformed && (historicalResults == null || !historicalResults.Any()))
 {
     <div class="alert alert-info mt-4">
-        No fixtures found for the selected teams.
+        No historical results found for the selected teams and season.
     </div>
 }
-
